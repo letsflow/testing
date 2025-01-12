@@ -1,0 +1,23 @@
+actors:
+  initiator:
+    title: Initiator
+  recipient:
+    title: Recipient
+
+states:
+  initial:
+    on: greet
+    by: initiator
+    goto: wait_on_recipient
+  wait_on_recipient:
+    transitions:
+      - on: reply
+        by: recipient
+        goto: wait_on_initiator
+      - on: ignore
+        by: recipient
+        goto: (failed)
+  wait_on_initiator:
+    on: complete
+    by: initiator
+    goto: (success)

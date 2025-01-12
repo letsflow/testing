@@ -1,0 +1,58 @@
+actors:
+  initiator:
+    title: Initiator
+    properties:
+      name: string
+      organization: string
+  recipient:
+    title: Recipient
+    properties:
+      name: string
+      organization: string
+
+actions:
+  introduce:
+    response:
+      type: object
+      properties:
+        name: !required string
+        organization: !required string
+    update:
+      set: current.actor
+      mode: merge
+  talk:
+    response: string
+    update:
+      set: result
+      mode: append
+      data: !tpl '{{ current.actor.name }} - {{ current.response }}'
+
+states:
+  initial:
+    on: introduce
+    by: initiator
+    goto: wait_on_introduction_recipient
+  wait_on_introduction_recipient:
+    on: introduce
+    by: recipient
+    goto: wait_on_initiator
+  wait_on_recipient:
+    transitions:
+      - on: talk
+        by: recipient
+        goto: wait_on_initiator
+      - on: end
+        by: recipient
+        goto: (done)
+  wait_on_initiator:
+    transitions:
+      - on: talk
+        by: initiator
+        goto: wait_on_recipient
+      - on: end
+        by: initiator
+        goto: (done)
+
+result:
+  type: array
+  items: string

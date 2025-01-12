@@ -1,0 +1,4 @@
+states:
+  initial:
+    on: complete
+    goto: (done)

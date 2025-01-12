@@ -1,0 +1,33 @@
+actors:
+  initiator:
+    title: Initiator
+  recipient:
+    title: Recipient
+
+actions:
+  talk:
+    update:
+      set: result
+      mode: append
+
+states:
+  initial:
+    on: talk
+    by: initiator
+    goto: wait_on_recipient
+  wait_on_recipient:
+    transitions:
+      - on: talk
+        by: recipient
+        goto: wait_on_initiator
+      - on: end
+        by: recipient
+        goto: (done)
+  wait_on_initiator:
+    transitions:
+      - on: talk
+        by: initiator
+        goto: wait_on_recipient
+      - on: end
+        by: initiator
+        goto: (done)
