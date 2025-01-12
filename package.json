@@ -1,0 +1,31 @@
+{
+  "name": "@letsflow/testing",
+  "description": "Test suite for LetsFlow",
+  "author": "Arnold Daniels <arnold@jasny.net>",
+  "license": "MIT",
+  "dependencies": {
+    "@cucumber/cucumber": "^11.2.0",
+    "@letsflow/core": "../core",
+    "chai": "^4.3.7",
+    "get-value": "^3.0.1",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/get-value": "^3.0.5",
+    "@types/node": "^22.10.5",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.4.2",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.7.3"
+  },
+  "scripts": {
+    "clean": "rm -rf ./lib ./dist",
+    "build": "tsc --project tsconfig.build.json",
+    "test": "cucumber-js",
+    "lint": "eslint \"{src,test}/**/*.ts\" --fix"
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+}
