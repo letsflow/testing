@@ -1,0 +1,52 @@
+actors:
+  person_*:
+    properties:
+      name: string
+      organization: string
+      is_present: !default true
+
+actions:
+  introduce:
+    if: !ref current.actor.name == null
+    response:
+      type: object
+      properties:
+        name: !required string
+        organization: !required string
+    update:
+      set: current.actor
+      mode: merge
+  talk:
+    if: !ref current.actor.is_present && (events[-1].actor.key != (events[?(!skipped && actor)] | @[-2]).actor.key)
+    response: string
+    update:
+      set: result
+      mode: append
+      data: !tpl '{{ current.actor.name }} - {{ current.response }}'
+  leave:
+    if: !ref current.actor.is_present
+    update:
+      set: current.actor.is_present
+      data: false
+
+states:
+  initial:
+    transitions:
+      - on: introduce
+        goto: ~
+      - on: talk
+        if: !ref values(actors)[?name == null] | length(@) == 0
+        goto: talking
+  talking:
+    transitions:
+      - on: talk
+        goto: ~
+      - on: leave
+        if: !ref values(actors)[?is_present] | length(@) >= 2
+        goto: ~
+      - on: leave
+        goto: (done)
+
+result:
+  type: array
+  items: string

@@ -12,7 +12,3 @@ export function parseData(data: string | DataTable): any {
     return data;
   }
 }
-
-export function unquote<T>(value: T): T {
-  return typeof value === 'string' ? value.replace(/^"(.*)"$/, '$1') as T : value;
-}

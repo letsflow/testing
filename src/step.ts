@@ -1,7 +1,7 @@
 import { When } from "@cucumber/cucumber"
 import { world } from "./world"
 import { step } from "@letsflow/core/process"
-import { parseData, unquote } from "./utils"
+import { parseData } from "./utils"
 
 function actorDoes(actorName: string, action: string, processName: string, response?: any) {
   const process = world.getProcess(processName);
@@ -11,9 +11,9 @@ function actorDoes(actorName: string, action: string, processName: string, respo
 
   world.setProcess(processName, steppedProcess);
 }
-When('{string} does {string} in the {string} process with {}', (actor, action, process, response) => actorDoes(actor, action, process, unquote(response)));
+When('{string} does {string} in the {string} process with {scalar}', (actor, action, process, response) => actorDoes(actor, action, process, response));
 When('{string} does {string} in the {string} process with:', (actor, action, process, response) => actorDoes(actor, action, process, parseData(response)));
 When('{string} does {string} in the {string} process', (actor, action, process) => actorDoes(actor, action, process));
-When('{string} does {string} with {}', (actor, action, response) => actorDoes(actor, action, 'main', unquote(response)));
+When('{string} does {string} with {scalar}', (actor, action, response) => actorDoes(actor, action, 'main', response));
 When('{string} does {string} with:', (actor, action, response) => actorDoes(actor, action, 'main', parseData(response)));
 When('{string} does {string}', (actor, action) => actorDoes(actor, action, 'main'));

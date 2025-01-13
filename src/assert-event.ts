@@ -4,7 +4,7 @@ import { Then } from "@cucumber/cucumber"
 import { world } from "./world"
 import { parseData } from "./utils"
 
-function assertLastEventSkipped(processName: string, expectedErrors?: string[]) {
+function lastEventSkipped(processName: string, expectedErrors?: string[]) {
   const process = world.getProcess(processName);
   const event = process.events[process.events.length - 1];
 
@@ -16,12 +16,24 @@ function assertLastEventSkipped(processName: string, expectedErrors?: string[]) 
     expect((event as ActionEvent).errors).to.include.members(expectedErrors);
   }
 }
-Then('the last event of the {string} process is skipped with {string}', (process, error) => assertLastEventSkipped(process, [error]));
-Then('the last event of the {string} process is skipped with:', (process, errors) => assertLastEventSkipped(process, parseData(errors)));
-Then('the last event of the {string} process is skipped', (process) => assertLastEventSkipped(process));
-Then('the last event is skipped with {string}', (error) => assertLastEventSkipped('main', [error]));
-Then('the last event is skipped with:', (errors) => assertLastEventSkipped('main', parseData(errors)));
-Then('the last event is skipped', () => assertLastEventSkipped('main'));
+Then('the last event of the {string} process is skipped with {string}', (process, error) => lastEventSkipped(process, [error]));
+Then('the last event of the {string} process is skipped with:', (process, errors) => lastEventSkipped(process, parseData(errors)));
+Then('the last event of the {string} process is skipped', (process) => lastEventSkipped(process));
+Then('the last event is skipped with {string}', (error) => lastEventSkipped('main', [error]));
+Then('the last event is skipped with:', (errors) => lastEventSkipped('main', parseData(errors)));
+Then('the last event is skipped', () => lastEventSkipped('main'));
+
+function lastEventNotSkipped(processName: string) {
+  const process = world.getProcess(processName);
+  const event = process.events[process.events.length - 1];
+
+  if ('skipped' in event && event.skipped) {
+    const errors = (process.events[process.events.length - 1] as any).errors ?? [];
+    expect.fail(`The last event is skipped with, because:\n  ${errors.join('\n  ')}`);
+  }
+}
+Then('the last event of the {string} process is not skipped', lastEventNotSkipped);
+Then('the last event is not skipped', () => lastEventNotSkipped('main'));
 
 function nothingIsSkipped(processName: string) {
   const process = world.getProcess(processName);
