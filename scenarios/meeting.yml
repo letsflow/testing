@@ -22,12 +22,12 @@ actions:
     update:
       set: result
       mode: append
-      data: !tpl '{{ current.actor.name }} - {{ current.response }}'
+      value: !tpl '{{ current.actor.name }} - {{ current.response }}'
   leave:
     if: !ref current.actor.is_present
     update:
       set: current.actor.is_present
-      data: false
+      value: false
 
 states:
   initial:

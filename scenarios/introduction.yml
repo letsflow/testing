@@ -25,7 +25,7 @@ actions:
     update:
       set: result
       mode: append
-      data: !tpl '{{ current.actor.name }} - {{ current.response }}'
+      value: !tpl '{{ current.actor.name }} - {{ current.response }}'
 
 states:
   initial:
