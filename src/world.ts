@@ -19,15 +19,15 @@ async function fileExists(path: string) {
 async function loadScenario(name: string): Promise<void> {
   let scenario: Scenario;
 
-  if (await fileExists(`${scenarioPath}/${name}.yml`)) {
-    const scenarioYaml = await fs.readFile(`${scenarioPath}/${name}.yml`, 'utf8');
-    scenario = yaml.parse(scenarioYaml);
+  if (await fileExists(`${scenarioPath}/${name}.json`)) {
+    const scenarioJson = await fs.readFile(`${scenarioPath}/${name}.json`, 'utf8');
+    scenario = JSON.parse(scenarioJson);
   } else if (await fileExists(`${scenarioPath}/${name}.yaml`)) {
     const scenarioYaml = await fs.readFile(`${scenarioPath}/${name}.yaml`, 'utf8');
     scenario = yaml.parse(scenarioYaml);
-  } else if (await fileExists(`${scenarioPath}/${name}.json`)) {
-    const scenarioJson = await fs.readFile(`${scenarioPath}/${name}.json`, 'utf8');
-    scenario = JSON.parse(scenarioJson);
+  } else if (await fileExists(`${scenarioPath}/${name}.yml`)) {
+    const scenarioYaml = await fs.readFile(`${scenarioPath}/${name}.yml`, 'utf8');
+    scenario = yaml.parse(scenarioYaml);
   } else {
     throw new Error(`Scenario "${name}" not found`);
   }
