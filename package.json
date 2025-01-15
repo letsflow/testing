@@ -27,7 +27,8 @@
   },
   "files": [
     "lib",
-    "src"
+    "src",
+    "cucumber.example.yaml"
   ],
   "scripts": {
     "clean": "rm -rf ./lib ./dist",

@@ -6,9 +6,9 @@ Test suite for LetsFlow workflows
 
 ## Installation
 
-Install the library using your package manager (npm, yarn, pnpm, etc).
+Install [Cucumber](https://cucumber.io) and this library using your package manager (npm, yarn, pnpm, etc).
 
-    yarn add @letsflow/testing
+    yarn add --dev @cucumber/cucumber @letsflow/testing
 
 ## Configuration
 
@@ -20,14 +20,12 @@ workflows:
     - node_modules/@letsflow/lib/**/*.js
 ```
 
-Config the `test:workflows` script in `package.json`
+Add the `test:workflows` script in `package.json`
 
 ```json
-{
   "scripts": {
     "test:workflows": "cucumber-js --profile workflows"
   }
-}
 ```
 
 ## Features

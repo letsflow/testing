@@ -1,0 +1,4 @@
+workflows:
+  require:
+    - node_modules/@letsflow/lib/**/*.js
+
