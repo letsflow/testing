@@ -6,11 +6,22 @@ Feature: Three persons introduce themselves and have a conversation
     And "Eve" is the "person_2" actor
     And "Jack" is the "person_3" actor
 
+    When the "default" service does "start" with:
+    """yaml
+      person_1: ~
+      person_2: ~
+      person_3: ~
+    """
+    Then the process is in "introductions"
+    And the process has actor "person_1"
+    And the process has actor "person_2"
+    And the process has actor "person_3"
+
   Scenario:
     When "Bob" does "introduce" with:
       | name         | Bob   |
       | organization | Jasny |
-    Then the process is in "initial"
+    Then the process is in "introductions"
     And the last event is not skipped
     And actor "person_1" has "name" is "Bob"
     And actor "person_1" has "organization" is "Jasny"
@@ -18,7 +29,7 @@ Feature: Three persons introduce themselves and have a conversation
     When "Eve" does "introduce" with:
       | name         | Eve      |
       | organization | Acme Inc |
-    Then the process is in "initial"
+    Then the process is in "introductions"
     And the last event is not skipped
     And actor "person_2" has "name" is "Eve"
     And actor "person_2" has "organization" is "Acme Inc"
@@ -26,7 +37,7 @@ Feature: Three persons introduce themselves and have a conversation
     When "Jack" does "introduce" with:
       | name         | Jack        |
       | organization | LTO Network |
-    Then the process is in "initial"
+    Then the process is in "introductions"
     And the last event is not skipped
     And actor "person_3" has "name" is "Jack"
     And actor "person_3" has "organization" is "LTO Network"

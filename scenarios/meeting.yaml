@@ -6,6 +6,16 @@ actors:
       is_present: !default true
 
 actions:
+  start:
+    actor: service:default
+    response:
+      patternProperties:
+        '^person_.*$':
+          properties:
+            name: string
+            organization: string
+          nullable: true
+    update: actors
   introduce:
     if: !ref current.actor.name == null
     response:
@@ -17,7 +27,7 @@ actions:
       set: current.actor
       mode: merge
   talk:
-    if: !ref current.actor.is_present && (events[-1].actor.key != (events[?(!skipped && actor)] | @[-2]).actor.key)
+    if: !ref current.actor.is_present && current.actor.key != previous[-1].actor.key
     response: string
     update:
       set: result
@@ -31,6 +41,13 @@ actions:
 
 states:
   initial:
+    transitions:
+      - on: start
+        goto: introductions
+        if: !ref values(actors)[?name == null] | length(@) > 0
+      - on: start
+        goto: talking
+  introductions:
     transitions:
       - on: introduce
         goto: ~

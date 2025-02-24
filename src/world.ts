@@ -39,7 +39,7 @@ async function loadScenario(name: string): Promise<void> {
 export class CustomWorld<ParametersType = any> extends World<ParametersType> {
   private readonly instructions = new Map<string, { scenario: string }>();
   private readonly processes = new Map<string, Process>();
-  private readonly actors = new Map<string, string>();
+  private readonly actors = new Map<string, { key: string; [_: string]: any }>();
 
   async addProcess(name: string, scenario: string) {
     await loadScenario(scenario);
@@ -54,10 +54,14 @@ export class CustomWorld<ParametersType = any> extends World<ParametersType> {
       throw new Error(`The "${name}" process is already instantiated`);
     }
 
-    this.actors.set(`${name}@${process}`, key);
+    this.actors.set(`${name}@${process}`, { key, ...properties });
   }
 
-  getActorByName(process: string, name: string): string {
+  getActorByName(process: string, name: string): { key: string; [_: string]: any } {
+    if (name.startsWith('service:')) {
+      return { key: name };
+    }
+
     if (!this.instructions.has(process)) {
       throw new Error(`There is no process called "${process}"`);
     }

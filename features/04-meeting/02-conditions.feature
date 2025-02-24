@@ -6,6 +6,17 @@ Feature: People are not committing to the social norms
     And "Eve" is the "person_2" actor
     And "Jack" is the "person_3" actor
 
+    When the "default" service does "start" with:
+    """yaml
+      person_1: ~
+      person_2: ~
+      person_3: ~
+    """
+    Then the process is in "introductions"
+    And the process has actor "person_1"
+    And the process has actor "person_2"
+    And the process has actor "person_3"
+
   Scenario: Person introduces himself and starts to talk
     When "Bob" does "introduce" with:
       | name         | Bob   |

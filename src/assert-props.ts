@@ -4,6 +4,15 @@ import getValue from 'get-value';
 import { world } from "./world"
 import { parseData } from "./utils"
 
+function assertActorExists(processName: string, actorKey: string) {
+  const process = world.getProcess(processName);
+  const actors = Object.keys(process.actors);
+
+  expect(actors).to.include(actorKey, `Actor '${actorKey}' is not defined in the process`);
+}
+Then('the {string} process has actor {string}', assertActorExists);
+Then('the process has actor {string}', (actorKey) => assertActorExists('main', actorKey));
+
 function assertActorProps(processName: string, actorKey: string, propName: string, propValue: any) {
   const process = world.getProcess(processName);
   const actor = process.actors[actorKey];

@@ -2,16 +2,24 @@ Feature: People leave the conversation
 
   Background:
     Given the process is created from the "meeting" scenario
-    And "Bob" is the "person_1" actor with:
-      | name         | Bob   |
-      | organization | Jasny |
-    And "Eve" is the "person_2" actor with:
-      | name         | Eve      |
-      | organization | Acme Inc |
-    And "Jack" is the "person_3" actor with:
-      | name         | Jack        |
-      | organization | LTO Network |
-    Then actor "person_1" has "is_present" is true
+    And "Bob" is the "person_1" actor
+    And "Eve" is the "person_2" actor
+    And "Jack" is the "person_3" actor
+
+    When the "default" service does "start" with:
+    """yaml
+      person_1:
+        name: Bob
+        organization: Jasny
+      person_2:
+        name: Eve
+        organization: Acme Inc
+      person_3:
+        name: Jack
+        organization: LTO Network
+    """
+    Then the process is in "talking"
+    And actor "person_1" has "is_present" is true
     And actor "person_2" has "is_present" is true
     And actor "person_3" has "is_present" is true
 
