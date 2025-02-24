@@ -2,14 +2,11 @@ import { DataTable, Given } from '@cucumber/cucumber';
 import { world } from "./world"
 import { yaml } from "@letsflow/core"
 
-async function addProcess(name: string, scenario: string, varsTable?: string | DataTable) {
-  const vars = typeof varsTable === 'string' ? yaml.parse(varsTable) : varsTable?.rowsHash();
-  await world.addProcess(name, { scenario, vars });
+async function addProcess(name: string, scenario: string) {
+  await world.addProcess(name, scenario);
 }
-Given('the {string} process is created from the {string} scenario with:', addProcess);
 Given('the {string} process is created from the {string} scenario', (name, scenario) => addProcess(name, scenario));
 Given('the process is created from the {string} scenario', (scenario) => addProcess('main', scenario));
-Given('the process is created from the {string} scenario with:', (scenario, varsTable) => addProcess('main', scenario, varsTable));
 
 function addActor(name: string, actor = "actor", process = "main", propsTable?: string | DataTable) {
   const props = typeof propsTable === 'string' ? yaml.parse(propsTable) : propsTable?.rowsHash();

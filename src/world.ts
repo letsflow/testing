@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { yaml } from '@letsflow/core';
-import { instantiate, Process, StartInstructions } from "@letsflow/core/process";
+import { instantiate, Process } from "@letsflow/core/process";
 import { normalize, NormalizedScenario, Scenario } from "@letsflow/core/scenario";
 import { setWorldConstructor, world as cucumberWorld, World } from '@cucumber/cucumber';
 
@@ -37,13 +37,13 @@ async function loadScenario(name: string): Promise<void> {
 }
 
 export class CustomWorld<ParametersType = any> extends World<ParametersType> {
-  private readonly instructions = new Map<string, StartInstructions>();
+  private readonly instructions = new Map<string, { scenario: string }>();
   private readonly processes = new Map<string, Process>();
   private readonly actors = new Map<string, string>();
 
-  async addProcess(name: string, instructions: StartInstructions) {
-    await loadScenario(instructions.scenario);
-    this.instructions.set(name, instructions);
+  async addProcess(name: string, scenario: string) {
+    await loadScenario(scenario);
+    this.instructions.set(name, { scenario });
   }
 
   addActor(name: string, process: string, key: string, properties: Record<string, any> = {}) {
@@ -53,11 +53,6 @@ export class CustomWorld<ParametersType = any> extends World<ParametersType> {
     if (this.processes.has(name)) {
       throw new Error(`The "${name}" process is already instantiated`);
     }
-
-    const instructions = this.instructions.get(name)!;
-
-    instructions.actors ??= {};
-    instructions.actors[key] ??= properties;
 
     this.actors.set(`${name}@${process}`, key);
   }
@@ -85,7 +80,7 @@ export class CustomWorld<ParametersType = any> extends World<ParametersType> {
     const instructions = this.instructions.get(name)!;
     const scenario = scenarios.get(instructions.scenario)!;
 
-    const process = instantiate(scenario, instructions);
+    const process = instantiate(scenario);
     this.processes.set(name, process);
 
     return process;
