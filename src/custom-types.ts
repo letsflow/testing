@@ -25,3 +25,8 @@ defineParameterType({
     return value.replace(/^"(.*)"$/, '$1');
   }
 });
+
+defineParameterType({
+  name: 'property',
+  regexp: /\w+/,
+});

@@ -1,0 +1,15 @@
+$id: schema:actions/draft-v1
+description: |
+  Create a document based on a template.
+  This action can be automated through a document generation service or performed manually by an actor
+allOf:
+  - $ref: https://schemas.letsflow.io/v1.0/action
+properties:
+  template: !required string
+  filetype: !default pdf
+  data:
+    description: |
+      Data to be used to populate the template.
+      When the action is performed by an actor, this is the default data.
+    type: object
+    additionalProperties: true

@@ -1,19 +1,21 @@
-import { ActionEvent } from "@letsflow/core/process"
+import { ActionEvent, applyFn } from '@letsflow/core/process';
 import { expect } from "chai"
 import { Then } from "@cucumber/cucumber"
 import { world } from "./world"
 import { parseData } from "./utils"
 
-function lastEventSkipped(processName: string, expectedErrors?: string[]) {
+function lastEventSkipped(processName: string, expectedRaw?: string[]) {
   const process = world.getProcess(processName);
   const event = process.events[process.events.length - 1];
+
 
   if (!('skipped' in event) || !event.skipped) {
     expect.fail('The last event is not skipped');
   }
 
-  if (expectedErrors !== undefined) {
-    expect((event as ActionEvent).errors).to.include.members(expectedErrors);
+  if (expectedRaw !== undefined) {
+    const expected = applyFn(expectedRaw, process);
+    expect((event as ActionEvent).errors).to.include.members(expected);
   }
 }
 Then('the last event of the {string} process is skipped with {string}', (process, error) => lastEventSkipped(process, [error]));

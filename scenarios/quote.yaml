@@ -1,0 +1,130 @@
+name: quote
+version: '1.0'
+title: Quote
+description: Send a quote based on customer requirements
+
+actors:
+  sales:
+    title: Organisation
+    role: sales
+    properties:
+      name: !default 'Acme Inc.'
+  customer:
+    title: Customer
+    properties:
+      id: !format uuid
+      company: string
+      address: string
+      contact: string
+      email: string
+
+actions:
+  request:
+    $schema: schema:actions/form-v1
+    actor: customer
+    response:
+      properties:
+        company: !required string
+        contact: string
+        email: !required
+          type: string
+          format: email
+        address: string
+        requirements: !required string
+    ui:
+      company:
+        ui:description: Company name
+      contact:
+        ui:description: First and last name
+      address:
+        ui:widget: textarea
+        ui:rows: 3
+      requirements:
+        ui:widget: textarea
+        ui:rows: 5
+    update:
+      - set: actors.customer
+        value: !ref "current.response | { id: uuid('customer', $.id), company: company, address: address, contact: contact, email: email }"
+        mode: merge
+      - set: vars.requirements
+        value: !ref current.response.requirements
+  create_quote:
+    $schema: schema:actions/draft-v1
+    actor: sales
+    title: Create a quote
+    description: Create a quote based on customer requirements
+    template: quote
+    data:
+      customer: !ref actors.customer
+    update: result
+  cancel:
+    $schema: schema:actions/form-v1
+    title: Cancel
+    description: Cancel the quote request
+    response:
+      properties:
+        reason: !required string
+    ui:
+      reason:
+        ui:widget: textarea
+        ui:rows: 3
+    update:
+      - set: vars.cancel_reason
+        value: !ref current.response.reason
+
+states:
+  initial:
+    on: request
+    goto: requested
+  requested:
+    instructions:
+      customer: !tpl |
+        Thank you for your request. We will get back to you shortly.
+      sales: !tpl |
+        Please create a quote based on the customer requirements:
+        {{ vars.requirements }}
+    transitions:
+      - on: create_quote
+        goto: quoted
+      - on: cancel
+        goto: (cancelled)
+  quoted:
+    notify:
+      service: email
+      message:
+        $schema: schema:messages/email-v1
+        to: !ref 'actors.customer | { name: contact, email: email }'
+        template: quote
+        generate_token: !ref actors.customer.id
+        data:
+          customer: !ref actors.customer
+        attachments:
+          - filename: quote.pdf
+            file: !ref result
+    transitions:
+      - on: accept
+        goto: (accepted)
+      - on: reject
+        goto: (rejected)
+      - after: 10 days
+        goto: (rejected)
+  (cancelled):
+    description: !tpl |
+      The quote request has been cancelled.
+      Reason: {{ vars.cancel_reason }}
+    notify:
+      service: email
+      if: !ref previous[-1].actor.key == 'sales'
+      message:
+        $schema: schema:messages/email-v1
+        to: !ref 'actors.customer | { name: contact, email: email }'
+        template: no-quote
+        data:
+          customer: !ref actors.customer
+          reason: !ref vars.cancel_reason
+
+vars:
+  requirements: string
+  cancel_reason: string
+
+result: !format uri

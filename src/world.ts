@@ -1,8 +1,10 @@
 import fs from 'fs/promises';
 import { yaml } from '@letsflow/core';
 import { instantiate, Process } from "@letsflow/core/process";
-import { normalize, NormalizedScenario, Scenario } from "@letsflow/core/scenario";
+import { normalize, NormalizedScenario, Scenario, validate } from '@letsflow/core/scenario';
 import { setWorldConstructor, world as cucumberWorld, World } from '@cucumber/cucumber';
+import betterAjvErrors from 'better-ajv-errors';
+import { scenarioSchema } from '@letsflow/core/schemas/v1.0';
 
 const scenarios = new Map<string, NormalizedScenario>();
 const scenarioPath = process.env.LETSFLOW_SCENARIO_PATH || './scenarios';
@@ -30,6 +32,11 @@ async function loadScenario(name: string): Promise<void> {
     scenario = yaml.parse(scenarioYaml);
   } else {
     throw new Error(`Scenario "${name}" not found`);
+  }
+
+  if (!validate(scenario)) {
+    console.error(betterAjvErrors(scenarioSchema, scenario, validate.errors, { format: 'cli', indent: 2 }));
+    throw new Error(`Scenario "${name}" is not valid`);
   }
 
   const normalized = normalize(scenario);

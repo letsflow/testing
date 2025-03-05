@@ -1,5 +1,5 @@
-import { Then } from "@cucumber/cucumber";
-import { hasEnded } from "@letsflow/core/process";
+import { DataTable, Then } from '@cucumber/cucumber';
+import { hasEnded } from '@letsflow/core/process';
 import { expect } from "chai";
 import { world } from "./world"
 import { parseData } from "./utils"
@@ -16,7 +16,7 @@ function assertState(processName: string, state: string) {
 Then('the {string} process is in {string}', assertState);
 Then('the process is in {string}', (state) => assertState('main', state));
 
-function assertProcessEnded(processName: string, status?: string, expectedResult?: any) {
+function assertProcessEnded(processName: string, status?: string, expectedResultRaw?: string | DataTable) {
   const process = world.getProcess(processName);
   const ended = hasEnded(process);
 
@@ -30,17 +30,18 @@ function assertProcessEnded(processName: string, status?: string, expectedResult
     expect(process.current.key).to.eq(status, 'The process is not in the expected end state');
   }
 
-  if (expectedResult !== undefined) {
+  if (expectedResultRaw !== undefined) {
+    const expectedResult = parseData(expectedResultRaw, process);
     expect(process.result).to.deep.eq(expectedResult, 'The process result is not as expected');
   }
 }
 Then('the {string} process ended in {string} with:', assertProcessEnded);
 Then('the {string} process ended in {string}', (process, status) => assertProcessEnded(process, status));
-Then('the {string} process ended with:', (process, expectedResult) => assertProcessEnded(process, undefined, parseData(expectedResult)));
+Then('the {string} process ended with:', (process, expectedResult) => assertProcessEnded(process, undefined, expectedResult));
 Then('the {string} process ended', (process) => assertProcessEnded(process));
-Then('the process ended in {string} with:', (status, expectedResult) => assertProcessEnded('main', status, parseData(expectedResult)));
+Then('the process ended in {string} with:', (status, expectedResult) => assertProcessEnded('main', status, expectedResult));
 Then('the process ended in {string}', (status) => assertProcessEnded('main', status));
-Then('the process ended with:', (expectedResult) => assertProcessEnded('main', undefined, parseData(expectedResult)));
+Then('the process ended with:', (expectedResult) => assertProcessEnded('main', undefined, expectedResult));
 Then('the process ended', () => assertProcessEnded('main'));
 
 function processHasNotEndedIn(processName: string, status: string) {

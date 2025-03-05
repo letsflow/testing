@@ -1,0 +1,21 @@
+$id: schema:messages/email-v1
+description: Send an email based on a template using the email service
+allOf:
+  - $ref: https://schemas.letsflow.io/v1.0/action
+properties:
+  to: !required
+    properties:
+      name: string
+      email: !required
+        type: string
+        format: email
+  template: !required string
+  generate_token: string
+  data:
+    type: object
+    additionalProperties: true
+  attachments:
+    items:
+      properties:
+        filename: string
+        source: !required string

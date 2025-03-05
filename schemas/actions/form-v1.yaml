@@ -1,0 +1,9 @@
+$id: schema:actions/form-v1
+description: Show a form using react-jsonschema-form for the user to fill out
+allOf:
+  - $ref: https://schemas.letsflow.io/v1.0/action
+properties:
+  ui:
+    additionalProperties: object
+required:
+  - response
