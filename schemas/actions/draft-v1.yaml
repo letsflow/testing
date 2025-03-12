@@ -2,8 +2,7 @@ $id: schema:actions/draft-v1
 description: |
   Create a document based on a template.
   This action can be automated through a document generation service or performed manually by an actor
-allOf:
-  - $ref: https://schemas.letsflow.io/v1.0/action
+additionalProperties: true
 properties:
   template: !required string
   filetype: !default pdf

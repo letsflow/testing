@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^11.2.0",
-    "@letsflow/core": "^1.3.3",
+    "@letsflow/core": "^1.4.1",
     "better-ajv-errors": "^1.2.0",
     "chai": "^4.3.7",
     "get-value": "^3.0.1",

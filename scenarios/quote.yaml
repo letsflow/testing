@@ -20,7 +20,7 @@ actors:
 
 actions:
   request:
-    $schema: schema:actions/form-v1
+    schema: actions/form-v1
     actor: customer
     response:
       properties:
@@ -49,7 +49,7 @@ actions:
       - set: vars.requirements
         value: !ref current.response.requirements
   create_quote:
-    $schema: schema:actions/draft-v1
+    schema: actions/draft-v1
     actor: sales
     title: Create a quote
     description: Create a quote based on customer requirements
@@ -58,7 +58,7 @@ actions:
       customer: !ref actors.customer
     update: result
   cancel:
-    $schema: schema:actions/form-v1
+    schema: actions/form-v1
     title: Cancel
     description: Cancel the quote request
     response:
@@ -69,7 +69,7 @@ actions:
         ui:widget: textarea
         ui:rows: 3
     update:
-      - set: vars.cancel_reason
+      - set: vars.reason
         value: !ref current.response.reason
 
 states:
@@ -92,7 +92,7 @@ states:
     notify:
       service: email
       message:
-        $schema: schema:messages/email-v1
+        schema: messages/email-v1
         to: !ref 'actors.customer | { name: contact, email: email }'
         template: quote
         generate_token: !ref actors.customer.id
@@ -100,7 +100,7 @@ states:
           customer: !ref actors.customer
         attachments:
           - filename: quote.pdf
-            file: !ref result
+            source: !ref result
     transitions:
       - on: accept
         goto: (accepted)
@@ -111,20 +111,20 @@ states:
   (cancelled):
     description: !tpl |
       The quote request has been cancelled.
-      Reason: {{ vars.cancel_reason }}
+      Reason: {{ vars.reason }}
     notify:
       service: email
       if: !ref previous[-1].actor.key == 'sales'
       message:
-        $schema: schema:messages/email-v1
+        schema: messages/email-v1
         to: !ref 'actors.customer | { name: contact, email: email }'
         template: no-quote
         data:
           customer: !ref actors.customer
-          reason: !ref vars.cancel_reason
+          reason: !ref vars.reason
 
 vars:
   requirements: string
-  cancel_reason: string
+  reason: string
 
 result: !format uri
