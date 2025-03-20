@@ -24,18 +24,26 @@ actions:
     actor: customer
     response:
       properties:
-        company: !required string
-        contact: string
+        company: !required
+          title: Company name
+          type: string
+        contact:
+          title: First and last name
+          type: string
         email: !required
+          title: Email address
           type: string
           format: email
-        address: string
-        requirements: !required string
+        address:
+          title: Company address
+          type: string
+        requirements: !required
+          title: Project requirements
+          description: >
+            Please describe your project and specify the requirements.
+            The quote will be more accurate if you provide more details.
+          type: string
     ui:
-      company:
-        ui:description: Company name
-      contact:
-        ui:description: First and last name
       address:
         ui:widget: textarea
         ui:rows: 3

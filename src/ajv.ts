@@ -1,63 +1,69 @@
 import fs from 'fs/promises';
-import path from 'path';
 import { ajv, yaml } from '@letsflow/core';
 import { normalize } from '@letsflow/core/scenario';
 import { schemaSchema } from '@letsflow/core/schemas/v1.0';
+import { existsSync } from 'fs';
+import { join } from 'path';
 
 const SCHEMA_DIR = './schemas';
 
-/**
- * Recursively finds all JSON and YAML files in a directory.
- */
-async function findSchemaFiles(dir: string): Promise<string[]> {
-  let files: string[] = [];
-  const entries = await fs.readdir(dir, { withFileTypes: true });
+function getSchemaFile(id: string): string {
+  const key = id.replace(/^schema:/, '');
 
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files = files.concat(await findSchemaFiles(fullPath));
-    } else if (entry.isFile() && /\.(json|ya?ml)$/.test(entry.name)) {
-      files.push(fullPath);
-    }
+  if (key.endsWith('.json') || key.endsWith('.yaml') || key.endsWith('.yml')) {
+    return join(SCHEMA_DIR, key);
   }
 
-  return files;
+  const paths = [
+    join(SCHEMA_DIR, `${key}.yaml`),
+    join(SCHEMA_DIR, `${key}.yml`),
+    join(SCHEMA_DIR, `${key}.json`),
+  ];
+
+  const path = paths.find((path) => existsSync(path));
+  if (!path) throw new Error(`Neither ${key}.yaml nor ${key}.json found in ${SCHEMA_DIR}`);
+
+  return path;
 }
 
-/**
- * Loads and parses schema files.
- */
-async function loadSchemas(): Promise<void> {
-  const files = await findSchemaFiles(SCHEMA_DIR);
+async function loadLocalSchema(id: string): Promise<void> {
+  try {
+    const filePath = getSchemaFile(id);
+    const content = await fs.readFile(filePath, 'utf8');
+    let schema: any;
 
-  for (const filePath of files) {
-    try {
-      const content = await fs.readFile(filePath, 'utf8');
-      let schema: any;
-
-      if (filePath.endsWith('.json')) {
-        schema = JSON.parse(content);
-      } else if (filePath.endsWith('.yaml') || filePath.endsWith('.yml')) {
-        schema = yaml.parse(content);
-      }
-
-      if (schema) {
-        const normalizedSchema = normalize(schema, { $schema: schemaSchema.$id });
-        const schemaId = normalizedSchema.$id;
-
-        if (!schemaId) {
-          console.warn(`Schema in ${filePath} is missing an $id, skipping registration.`);
-          continue;
-        }
-
-        ajv.addSchema(normalizedSchema, schemaId);
-      }
-    } catch (error) {
-      console.error(`Failed to process ${filePath}:`, error);
+    if (filePath.endsWith('.json')) {
+      schema = JSON.parse(content);
+    } else if (filePath.endsWith('.yaml') || filePath.endsWith('.yml')) {
+      schema = yaml.parse(content);
     }
+
+    if (schema) {
+      const normalizedSchema = normalize(schema, { $schema: schemaSchema.$id });
+      const schemaId = normalizedSchema.$id ?? id;
+
+      ajv.addSchema(normalizedSchema, schemaId);
+    }
+  } catch (error) {
+    console.error(`Failed to process ${id}:`, error);
   }
 }
 
-// Load schemas at startup
-loadSchemas().catch(console.error);
+async function loadRemoveSchema(uri: string) {
+  const response = await fetch(uri);
+  if (!response.ok) {
+    if (console) console.warn(`Failed to fetch schema at ${uri}: ${response.status} ${response.statusText}`);
+    return {};
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    if (console) console.warn(`Failed to parse schema at ${uri}: ${error}`);
+    return {};
+  }
+}
+
+ajv.opts.loadSchema = async (uri) => {
+  return uri.startsWith('schema:') ? loadLocalSchema(uri) : loadRemoveSchema(uri);
+}
