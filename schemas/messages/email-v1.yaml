@@ -3,11 +3,12 @@ description: Send an email based on a template using the email service
 additionalProperties: true
 properties:
   to: !required
-    properties:
-      name: string
-      email: !required
-        type: string
-        format: email
+    oneOf:
+      - !format email
+      - properties:
+          name: string
+          email: !format email
+        required: [email]
   template: !required string
   generate_token: string
   data:

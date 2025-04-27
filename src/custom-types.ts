@@ -30,3 +30,31 @@ defineParameterType({
   name: 'property',
   regexp: /\w+/,
 });
+
+defineParameterType({
+  name: 'time',
+  regexp: /(\d+)\s*(seconds?|minutes?|hours?|days?|weeks?)+/,
+  transformer: (valueStr: string, unit: string): number => {
+    const value = parseInt(valueStr, 10);
+
+    switch (unit) {
+      case 'second':
+      case 'seconds':
+        return value;
+      case 'minute':
+      case 'minutes':
+        return value * 60;
+      case 'hour':
+      case 'hours':
+        return value * 3600;
+      case 'day':
+      case 'days':
+        return value * 86400;
+      case 'week':
+      case 'weeks':
+        return value * 604800;
+      default:
+        throw new Error('Invalid time period unit.');
+    }
+  }
+});

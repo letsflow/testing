@@ -18,9 +18,8 @@ Then('the process is in {string}', (state) => assertState('main', state));
 
 function assertProcessEnded(processName: string, status?: string, expectedResultRaw?: string | DataTable) {
   const process = world.getProcess(processName);
-  const ended = hasEnded(process);
 
-  if (!ended) {
+  if (process.isRunning) {
     const errors = (process.events[process.events.length - 1] as any).errors ?? [];
     expect.fail('The process has not ended' + (errors.length > 0 ? `, because:\n  ${errors.join('\n  ')}` : ''));
   }
@@ -56,7 +55,7 @@ Then('the process has not ended in {string}', (status) => processHasNotEndedIn('
 function processHasNotEnded(processName: string) {
   const process = world.getProcess(processName);
 
-  if (hasEnded(process)) {
+  if (!process.isRunning) {
     expect.fail(`The process has ended in state ${process.current.key}`);
   }
 }

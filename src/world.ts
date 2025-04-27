@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import { yaml } from '@letsflow/core';
 import { instantiate, Process } from "@letsflow/core/process";
 import { normalize, NormalizedScenario, Scenario, validateAsync } from '@letsflow/core/scenario';
-import { setWorldConstructor, world as cucumberWorld, World } from '@cucumber/cucumber';
+import { setWorldConstructor, world as cucumberWorld, World as BaseWorld } from '@cucumber/cucumber';
 import betterAjvErrors from 'better-ajv-errors';
 import { scenarioSchema } from '@letsflow/core/schemas/v1.0';
 
@@ -43,7 +43,7 @@ async function loadScenario(name: string): Promise<void> {
   scenarios.set(name, normalized);
 }
 
-export class CustomWorld<ParametersType = any> extends World<ParametersType> {
+export class World<ParametersType = any> extends BaseWorld<ParametersType> {
   private readonly instructions = new Map<string, { scenario: string }>();
   private readonly processes = new Map<string, Process>();
   private readonly actors = new Map<string, { key: string; [_: string]: any }>();
@@ -59,6 +59,9 @@ export class CustomWorld<ParametersType = any> extends World<ParametersType> {
     }
     if (this.processes.has(name)) {
       throw new Error(`The "${name}" process is already instantiated`);
+    }
+    if (this.actors.has(`${name}@${process}`)) {
+      throw new Error(`The "${process}" process already has an actor called "${name}"`);
     }
 
     this.actors.set(`${name}@${process}`, { key, ...properties });
@@ -97,11 +100,15 @@ export class CustomWorld<ParametersType = any> extends World<ParametersType> {
     return process;
   }
 
+  getProcesses(): Record<string, Process> {
+    return Object.fromEntries(this.processes.entries());
+  }
+
   setProcess(name: string, process: Process) {
     this.processes.set(name, process);
   }
 }
 
-setWorldConstructor(CustomWorld);
+setWorldConstructor(World);
 
-export const world = cucumberWorld as CustomWorld;
+export const world = cucumberWorld as World;

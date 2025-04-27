@@ -22,6 +22,18 @@ Feature: The customer accepts or rejects the quote
     And the process ended in "accepted"
 
   Scenario: Customer rejects the quote
-    When "Alice" does "reject"
+    When "Alice" does "reject" with:
+      | reason | Too expensive |
     Then the last event is not skipped
     And the process ended in "rejected"
+    And the state description is:
+      """
+      The quote has been rejected.
+      Reason: Too expensive
+      """
+
+  Scenario: Customer doesn't respond
+    When 10 days pass
+    Then the last event is a timeout
+    Then the process ended in "rejected"
+    And the state description is "The customer has not responded to the quote."

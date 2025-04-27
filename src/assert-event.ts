@@ -45,3 +45,17 @@ function nothingIsSkipped(processName: string) {
 }
 Then('nothing is skipped of the {string} process', nothingIsSkipped);
 Then('nothing is skipped', () => nothingIsSkipped('main'));
+
+function assertEventIsTimeout(processName: string) {
+  const process = world.getProcess(processName);
+  const event = process.events[process.events.length - 1];
+
+  if (('scenario' in event) || ('action' in event)) {
+    expect.fail(
+      'The last event is not a timeout event, but ' +
+      (('scenario' in event) ? 'a scenario event' : 'an action event')
+    );
+  }
+}
+Then('the last event of the {string} process is a timeout', assertEventIsTimeout);
+Then('the last event is a timeout', () => assertEventIsTimeout('main'));

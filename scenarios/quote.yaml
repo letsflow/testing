@@ -65,10 +65,10 @@ actions:
     data:
       customer: !ref actors.customer
     update: result
-  cancel:
+  reject: &reject_action
     schema: actions/form-v1
-    title: Cancel
-    description: Cancel the quote request
+    title: Reject
+    description: Reject the quote request
     response:
       properties:
         reason: !required string
@@ -79,6 +79,10 @@ actions:
     update:
       - set: vars.reason
         value: !ref current.response.reason
+  cancel:
+    <<: *reject_action
+    title: Cancel
+    description: Cancel the quote request
 
 states:
   initial:
@@ -130,6 +134,13 @@ states:
         data:
           customer: !ref actors.customer
           reason: !ref vars.reason
+  (rejected):
+    description: !select
+      $: !ref vars.reason == null
+      true: The customer has not responded to the quote.
+      false: !tpl |
+        The quote has been rejected.
+        Reason: {{ vars.reason }}
 
 vars:
   requirements: string

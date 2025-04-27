@@ -1,4 +1,4 @@
-Feature: The sales department creates a quote
+Feature: The sales team or customer cancels
 
   Background:
     Given the process is created from the "quote" scenario

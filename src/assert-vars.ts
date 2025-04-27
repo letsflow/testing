@@ -27,3 +27,11 @@ Then('the {string} process result is {scalar}', assertResult);
 Then('the result is {scalar}', (expected) => assertResult('main', expected));
 Then('the {string} process result is:', (process: string, expected) => assertResult(process, parseData(expected)));
 Then('the result is:', (expected) => assertResult('main', parseData(expected)));
+
+function assertTag(processName: string, tag: string) {
+  const process = world.getProcess(processName);
+
+  expect(process.tags).to.include(tag, `The process does not have the tag "${tag}"`);
+}
+Then('the {string} process has tag {string}', assertTag);
+Then('the process has tag {string}', (tag) => assertTag('main', tag));
