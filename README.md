@@ -17,7 +17,7 @@ Create the [cucumber configuration](https://github.com/cucumber/cucumber-js/blob
 ```yaml
 workflows:
   require:
-    - node_modules/@letsflow/lib/**/*.js
+    - node_modules/@letsflow/testing/lib/**/*.js
 ```
 
 Add the `test:workflows` script in `package.json`
