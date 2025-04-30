@@ -43,7 +43,7 @@ function nothingIsSkipped(processName: string) {
 
   expect(skippedEvents).to.have.length(0, 'Some events were skipped');
 }
-Then('nothing is skipped of the {string} process', nothingIsSkipped);
+Then('nothing is skipped of/from the {string} process', nothingIsSkipped);
 Then('nothing is skipped', () => nothingIsSkipped('main'));
 
 function assertEventIsTimeout(processName: string) {

@@ -1,5 +1,4 @@
 import { DataTable, Then } from '@cucumber/cucumber';
-import { hasEnded } from '@letsflow/core/process';
 import { expect } from "chai";
 import { world } from "./world"
 import { parseData } from "./utils"

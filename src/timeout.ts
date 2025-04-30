@@ -7,12 +7,10 @@ function timePasses(seconds: number) {
     world.setProcess(processName, timeout(process, { timePassed: seconds }));
   });
 }
-When('{time} pass', timePasses);
-When('{time} passes', timePasses);
+When('{time} pass(es)', timePasses);
 
 function timePassesFor(seconds: number, processName: string) {
   const process = world.getProcess(processName);
   world.setProcess(processName, timeout(process, { timePassed: seconds }));
 }
-When('{time} pass for the {string} process', timePassesFor);
-When('{time} passes for the {string} process', timePassesFor);
+When('{time} pass(es) for the {string} process', timePassesFor);

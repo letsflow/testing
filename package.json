@@ -1,12 +1,14 @@
 {
   "name": "@letsflow/testing",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Test suite for LetsFlow",
   "author": "Arnold Daniels <arnold@jasny.net>",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "@cucumber/cucumber": "^11.2.0",
     "@letsflow/core": "^1.5.0",
@@ -28,11 +30,10 @@
   },
   "files": [
     "lib",
-    "src",
     "cucumber.example.yaml"
   ],
   "scripts": {
-    "clean": "rm -rf ./lib ./dist",
+    "clean": "rm -rf ./lib",
     "build": "tsc --project tsconfig.build.json",
     "test": "cucumber-js",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix"

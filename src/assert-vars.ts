@@ -1,4 +1,4 @@
-import { DataTable, Then } from "@cucumber/cucumber";
+import { Then } from "@cucumber/cucumber";
 import { expect } from "chai";
 import getValue from 'get-value';
 import { world } from "./world"
@@ -33,5 +33,13 @@ function assertTag(processName: string, tag: string) {
 
   expect(process.tags).to.include(tag, `The process does not have the tag "${tag}"`);
 }
-Then('the {string} process has tag {string}', assertTag);
-Then('the process has tag {string}', (tag) => assertTag('main', tag));
+Then('the {string} process has (the )tag {string}', assertTag);
+Then('the process has (the )tag {string}', (tag) => assertTag('main', tag));
+
+function assertNotTag(processName: string, tag: string) {
+  const process = world.getProcess(processName);
+
+  expect(process.tags).to.not.include(tag, `The process does have the tag "${tag}"`);
+}
+Then('the {string} process doesn\'t have (the )tag {string}', assertNotTag);
+Then('the process doesn\'t have (the )tag {string}', (tag) => assertNotTag('main', tag));

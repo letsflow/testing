@@ -16,10 +16,10 @@ function assertStateVar(property: string, processName: string, expectedRaw: any)
 
   expect(actualValue).to.eq(expected, `The ${property} of the current state does not have the expected value`);
 }
-Then('the state {property} of the {string} process has {string} is {string}', assertStateVar);
-Then('the state {property} is {string}', (property, expected) => assertStateVar(property, 'main', expected));
-Then('the state {property} of the {string} process is:', (property, process, expected) => assertStateVar(property, process, parseData(expected)));
-Then('the state {property} is:', (property, expected) => assertStateVar(property, 'main', parseData(expected)));
+Then('the state {property} of the {string} process has {string} is/are {string}', assertStateVar);
+Then('the state {property} is/are {string}', (property, expected) => assertStateVar(property, 'main', expected));
+Then('the state {property} of the {string} process is:/are:', (property, process, expected) => assertStateVar(property, process, parseData(expected)));
+Then('the state {property} is:/are:', (property, expected) => assertStateVar(property, 'main', parseData(expected)));
 
 function assertInstructions(actorKey: string, processName: string, expectedRaw: string) {
   const process = world.getProcess(processName);
@@ -32,7 +32,7 @@ function assertInstructions(actorKey: string, processName: string, expectedRaw: 
 
   expect(instructions.trim()).to.eq(expected.trim(), `Actor '${actorKey}' does not have the expected instructions`);
 }
-Then('actor {string} in the {string} process has instructions {string}', assertInstructions);
-Then('actor {string} has instructions {string}', (actorKey, expected) => assertInstructions(actorKey, 'main', expected));
-Then('actor {string} in the {string} process has instructions:', assertInstructions);
-Then('actor {string} has instructions:', (actorKey, expected) => assertInstructions(actorKey, 'main', expected));
+Then('actor {string} in the {string} process has (the )instruction(s) {string}', assertInstructions);
+Then('actor {string} has (the )instruction(s) {string}', (actorKey, expected) => assertInstructions(actorKey, 'main', expected));
+Then('actor {string} in the {string} process has (the )instruction(s):', assertInstructions);
+Then('actor {string} has (the )instruction(s):', (actorKey, expected) => assertInstructions(actorKey, 'main', expected));
