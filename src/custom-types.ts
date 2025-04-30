@@ -1,9 +1,9 @@
-import { defineParameterType } from "@cucumber/cucumber"
+import { defineParameterType } from '@cucumber/cucumber';
 
 defineParameterType({
   name: 'boolean',
   regexp: /true|false/,
-  transformer: s => s === 'true',
+  transformer: (s) => s === 'true',
 });
 
 defineParameterType({
@@ -23,7 +23,7 @@ defineParameterType({
     }
 
     return value.replace(/^"(.*)"$/, '$1');
-  }
+  },
 });
 
 defineParameterType({
@@ -56,5 +56,5 @@ defineParameterType({
       default:
         throw new Error('Invalid time period unit.');
     }
-  }
+  },
 });

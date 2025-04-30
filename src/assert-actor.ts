@@ -1,8 +1,8 @@
-import { Then } from "@cucumber/cucumber";
-import { expect } from "chai";
+import { Then } from '@cucumber/cucumber';
+import { expect } from 'chai';
 import getValue from 'get-value';
-import { world } from "./world"
-import { parseData } from "./utils"
+import { world } from './world';
+import { parseData } from './utils';
 import { applyFn } from '@letsflow/core/process';
 
 function assertActorExists(processName: string, actorKey: string) {
@@ -27,6 +27,12 @@ function assertActorProp(actorKey: string, processName: string, propName: string
   expect(actualValue).to.eq(value, `Actor '${actorKey}' does not have the expected value for '${propName}'`);
 }
 Then('actor {string} in the {string} process has {string} is {scalar}', assertActorProp);
-Then('actor {string} has {string} is {scalar}', (actorKey, propName, propValue) => assertActorProp(actorKey, 'main', propName, propValue));
-Then('actor {string} in the {string} process has {string} is:', (actorKey, process, propName, expected) => assertActorProp(actorKey, process, propName, parseData(expected)));
-Then('actor {string} has {string} is:', (actorKey, propName, expected) => assertActorProp(actorKey, 'main', propName, parseData(expected)));
+Then('actor {string} has {string} is {scalar}', (actorKey, propName, propValue) =>
+  assertActorProp(actorKey, 'main', propName, propValue),
+);
+Then('actor {string} in the {string} process has {string} is:', (actorKey, process, propName, expected) =>
+  assertActorProp(actorKey, process, propName, parseData(expected)),
+);
+Then('actor {string} has {string} is:', (actorKey, propName, expected) =>
+  assertActorProp(actorKey, 'main', propName, parseData(expected)),
+);

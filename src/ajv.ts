@@ -14,11 +14,7 @@ function getSchemaFile(id: string): string {
     return join(SCHEMA_DIR, key);
   }
 
-  const paths = [
-    join(SCHEMA_DIR, `${key}.yaml`),
-    join(SCHEMA_DIR, `${key}.yml`),
-    join(SCHEMA_DIR, `${key}.json`),
-  ];
+  const paths = [join(SCHEMA_DIR, `${key}.yaml`), join(SCHEMA_DIR, `${key}.yml`), join(SCHEMA_DIR, `${key}.json`)];
 
   const path = paths.find((path) => existsSync(path));
   if (!path) throw new Error(`Neither ${key}.yaml nor ${key}.json found in ${SCHEMA_DIR}`);
@@ -66,4 +62,4 @@ async function loadRemoveSchema(uri: string) {
 
 ajv.opts.loadSchema = async (uri) => {
   return uri.startsWith('schema:') ? loadLocalSchema(uri) : loadRemoveSchema(uri);
-}
+};

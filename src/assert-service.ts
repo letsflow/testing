@@ -1,7 +1,7 @@
-import { DataTable, Then } from "@cucumber/cucumber";
-import { expect } from "chai";
-import { world } from "./world"
-import { parseData } from "./utils"
+import { DataTable, Then } from '@cucumber/cucumber';
+import { expect } from 'chai';
+import { world } from './world';
+import { parseData } from './utils';
 
 function assertServiceNotified(service: string, processName: string, expectedRaw?: string | DataTable) {
   const process = world.getProcess(processName);
@@ -15,7 +15,9 @@ function assertServiceNotified(service: string, processName: string, expectedRaw
   expect(notify.message).to.deep.eq(expectedResult, `Service '${service}' was not notified with the expected message`);
 }
 Then('service {string} in the {string} process is notified with:', assertServiceNotified);
-Then('service {string} in the {string} process is notified', (service, process) => assertServiceNotified(service, process));
+Then('service {string} in the {string} process is notified', (service, process) =>
+  assertServiceNotified(service, process),
+);
 Then('service {string} is notified with:', (service, expected) => assertServiceNotified(service, 'main', expected));
 Then('service {string} is notified', (service) => assertServiceNotified(service, 'main'));
 

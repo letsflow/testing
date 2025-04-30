@@ -1,13 +1,12 @@
 import { ActionEvent, applyFn } from '@letsflow/core/process';
-import { expect } from "chai"
-import { Then } from "@cucumber/cucumber"
-import { world } from "./world"
-import { parseData } from "./utils"
+import { expect } from 'chai';
+import { Then } from '@cucumber/cucumber';
+import { world } from './world';
+import { parseData } from './utils';
 
 function lastEventSkipped(processName: string, expectedRaw?: string[]) {
   const process = world.getProcess(processName);
   const event = process.events[process.events.length - 1];
-
 
   if (!('skipped' in event) || !event.skipped) {
     expect.fail('The last event is not skipped');
@@ -18,8 +17,12 @@ function lastEventSkipped(processName: string, expectedRaw?: string[]) {
     expect((event as ActionEvent).errors).to.include.members(expected);
   }
 }
-Then('the last event of the {string} process is skipped with {string}', (process, error) => lastEventSkipped(process, [error]));
-Then('the last event of the {string} process is skipped with:', (process, errors) => lastEventSkipped(process, parseData(errors)));
+Then('the last event of the {string} process is skipped with {string}', (process, error) =>
+  lastEventSkipped(process, [error]),
+);
+Then('the last event of the {string} process is skipped with:', (process, errors) =>
+  lastEventSkipped(process, parseData(errors)),
+);
 Then('the last event of the {string} process is skipped', (process) => lastEventSkipped(process));
 Then('the last event is skipped with {string}', (error) => lastEventSkipped('main', [error]));
 Then('the last event is skipped with:', (errors) => lastEventSkipped('main', parseData(errors)));
@@ -50,10 +53,9 @@ function assertEventIsTimeout(processName: string) {
   const process = world.getProcess(processName);
   const event = process.events[process.events.length - 1];
 
-  if (('scenario' in event) || ('action' in event)) {
+  if ('scenario' in event || 'action' in event) {
     expect.fail(
-      'The last event is not a timeout event, but ' +
-      (('scenario' in event) ? 'a scenario event' : 'an action event')
+      'The last event is not a timeout event, but ' + ('scenario' in event ? 'a scenario event' : 'an action event'),
     );
   }
 }

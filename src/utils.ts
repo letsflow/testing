@@ -1,5 +1,5 @@
-import { DataTable } from "@cucumber/cucumber"
-import { yaml } from "@letsflow/core"
+import { DataTable } from '@cucumber/cucumber';
+import { yaml } from '@letsflow/core';
 import { applyFn, Process } from '@letsflow/core/process';
 
 export function parseData(data: string | DataTable, process?: Process): any {
@@ -11,7 +11,7 @@ export function parseData(data: string | DataTable, process?: Process): any {
   try {
     const result = yaml.parse(data);
     return process ? applyFn(result, process) : result;
-  } catch (_) {
+  } catch {
     return process ? applyFn({ '<tpl>': data }, process) : data;
   }
 }

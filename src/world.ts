@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { yaml } from '@letsflow/core';
-import { instantiate, Process } from "@letsflow/core/process";
+import { instantiate, Process } from '@letsflow/core/process';
 import { normalize, NormalizedScenario, Scenario, validateAsync } from '@letsflow/core/scenario';
 import { setWorldConstructor, world as cucumberWorld, World as BaseWorld } from '@cucumber/cucumber';
 import betterAjvErrors from 'better-ajv-errors';
@@ -34,7 +34,7 @@ async function loadScenario(name: string): Promise<void> {
     throw new Error(`Scenario "${name}" not found`);
   }
 
-  if (!await validateAsync(scenario)) {
+  if (!(await validateAsync(scenario))) {
     console.error(betterAjvErrors(scenarioSchema, scenario, validateAsync.errors, { format: 'cli', indent: 2 }));
     throw new Error(`Scenario "${name}" is not valid`);
   }

@@ -1,8 +1,8 @@
-import { Then } from "@cucumber/cucumber";
-import { expect } from "chai";
+import { Then } from '@cucumber/cucumber';
+import { expect } from 'chai';
 import getValue from 'get-value';
-import { world } from "./world"
-import { parseData } from "./utils"
+import { world } from './world';
+import { parseData } from './utils';
 import { applyFn } from '@letsflow/core/process';
 
 function assertVar(variable: string, processName: string, valueRaw: any) {
@@ -14,7 +14,9 @@ function assertVar(variable: string, processName: string, valueRaw: any) {
 }
 Then('variable {string} in the {string} process is {scalar}', assertVar);
 Then('variable {string} is {scalar}', (variable, value) => assertVar(variable, 'main', value));
-Then('variable {string} in the {string} process is:', (variable, process, expected) => assertVar(variable, process, parseData(expected)));
+Then('variable {string} in the {string} process is:', (variable, process, expected) =>
+  assertVar(variable, process, parseData(expected)),
+);
 Then('variable {string} is:', (variable, expected) => assertVar(variable, 'main', parseData(expected)));
 
 function assertResult(processName: string, valueRaw: any) {
@@ -41,5 +43,5 @@ function assertNotTag(processName: string, tag: string) {
 
   expect(process.tags).to.not.include(tag, `The process does have the tag "${tag}"`);
 }
-Then('the {string} process doesn\'t have (the )tag {string}', assertNotTag);
-Then('the process doesn\'t have (the )tag {string}', (tag) => assertNotTag('main', tag));
+Then("the {string} process doesn't have (the )tag {string}", assertNotTag);
+Then("the process doesn't have (the )tag {string}", (tag) => assertNotTag('main', tag));

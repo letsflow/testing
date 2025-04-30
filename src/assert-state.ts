@@ -1,7 +1,7 @@
 import { DataTable, Then } from '@cucumber/cucumber';
-import { expect } from "chai";
-import { world } from "./world"
-import { parseData } from "./utils"
+import { expect } from 'chai';
+import { world } from './world';
+import { parseData } from './utils';
 
 function assertState(processName: string, state: string) {
   const process = world.getProcess(processName);
@@ -35,9 +35,13 @@ function assertProcessEnded(processName: string, status?: string, expectedResult
 }
 Then('the {string} process ended in {string} with:', assertProcessEnded);
 Then('the {string} process ended in {string}', (process, status) => assertProcessEnded(process, status));
-Then('the {string} process ended with:', (process, expectedResult) => assertProcessEnded(process, undefined, expectedResult));
+Then('the {string} process ended with:', (process, expectedResult) =>
+  assertProcessEnded(process, undefined, expectedResult),
+);
 Then('the {string} process ended', (process) => assertProcessEnded(process));
-Then('the process ended in {string} with:', (status, expectedResult) => assertProcessEnded('main', status, expectedResult));
+Then('the process ended in {string} with:', (status, expectedResult) =>
+  assertProcessEnded('main', status, expectedResult),
+);
 Then('the process ended in {string}', (status) => assertProcessEnded('main', status));
 Then('the process ended with:', (expectedResult) => assertProcessEnded('main', undefined, expectedResult));
 Then('the process ended', () => assertProcessEnded('main'));
