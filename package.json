@@ -1,6 +1,6 @@
 {
   "name": "@letsflow/testing",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Test suite for LetsFlow",
   "author": "Arnold Daniels <arnold@jasny.net>",
   "license": "MIT",
