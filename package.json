@@ -13,7 +13,7 @@
     "@cucumber/cucumber": "^12.4.0",
     "@letsflow/core": "^1.5.0",
     "better-ajv-errors": "^2.0.2",
-    "chai": "^6.2.1",
+    "chai": "^6.2.2",
     "get-value": "^4.0.1",
     "ts-node": "^10.9.2"
   },
